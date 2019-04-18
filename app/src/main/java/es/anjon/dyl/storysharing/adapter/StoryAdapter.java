@@ -44,11 +44,13 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryCardVie
 
     @Override
     public void onBindViewHolder(StoryCardViewHolder holder, int position) {
-        holder.titleView.setText(mStories.get(position).toString());
+        final Story story = mStories.get(position);
+        holder.titleView.setText(story.toString());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), StoryActivity.class);
+                intent.putExtra(StoryActivity.STORY_KEY, story);
                 v.getContext().startActivity(intent);
             }
         });
