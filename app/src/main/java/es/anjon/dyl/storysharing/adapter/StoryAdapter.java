@@ -1,17 +1,17 @@
 package es.anjon.dyl.storysharing.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import es.anjon.dyl.storysharing.R;
+import es.anjon.dyl.storysharing.StoryActivity;
 import es.anjon.dyl.storysharing.model.Story;
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryCardViewHolder> {
@@ -21,6 +21,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryCardVie
     public static class StoryCardViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
         public TextView titleView;
+
         public StoryCardViewHolder(CardView v) {
             super(v);
             cardView = v;
@@ -43,15 +44,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryCardVie
 
     @Override
     public void onBindViewHolder(StoryCardViewHolder holder, int position) {
-        holder.titleView.setText(mStories.get(position).toString());
+        final Story story = mStories.get(position);
+        holder.titleView.setText(story.toString());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //Intent intent = new Intent(v.getContext(), SecondPage.class);
-                //v.getContext().startActivity(intent);
-                Toast.makeText(v.getContext().getApplicationContext(), "Hi", Toast.LENGTH_SHORT);
-                Log.d("yo", "I clicked one of the card views please");
+                Intent intent = new Intent(v.getContext(), StoryActivity.class);
+                intent.putExtra(StoryActivity.STORY_KEY, story);
+                v.getContext().startActivity(intent);
             }
         });
     }

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.anjon.dyl.storysharing.adapter.StoryAdapter;
+import es.anjon.dyl.storysharing.model.Scene;
 import es.anjon.dyl.storysharing.model.Story;
 
 public class MainActivity extends AppCompatActivity
@@ -50,9 +51,18 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         List<Story> stories = new ArrayList<>();
-        for (int i =0; i < 20; i++) {
+        Story s = new Story();
+        s.setTitle("A really really really long title that might make the box explode or something so hopefully put the elipsis or something instead maybe some sort of max height of 70 percent?");
+        stories.add(s);
+        for (int i = 0; i < 20; i++) {
             Story story = new Story();
             story.setTitle("Hello World! " + i);
+            List<Scene> scenes = new ArrayList<>();
+            for (int j = 0; j < 5; j++) {
+                Scene scene = new Scene(story.getTitle() + " - Scene " + j);
+                scenes.add(scene);
+            }
+            story.setScenes(scenes);
             stories.add(story);
         }
 
