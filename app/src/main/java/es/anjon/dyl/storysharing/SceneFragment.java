@@ -1,5 +1,6 @@
 package es.anjon.dyl.storysharing;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ public class SceneFragment extends Fragment {
                 R.layout.fragment_scene, container, false);
         TextView titleView = rootView.findViewById(R.id.title);
         titleView.setText(mScene.getTitle());
+        rootView.setBackgroundColor(Color.parseColor(mScene.getBackgroundColour()));
 
         return rootView;
     }

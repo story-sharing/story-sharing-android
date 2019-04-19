@@ -20,6 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import es.anjon.dyl.storysharing.model.Scene;
 import es.anjon.dyl.storysharing.model.Story;
+import es.anjon.dyl.storysharing.transformer.DepthPageTransformer;
 
 public class StoryActivity extends FragmentActivity {
 
@@ -36,6 +37,7 @@ public class StoryActivity extends FragmentActivity {
         mPager = findViewById(R.id.pager);
         final PagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
+        mPager.setPageTransformer(true, new DepthPageTransformer());
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         ListenerRegistration mScenesListener = db.collection("stories/" + mStory.getId() + "/scenes").orderBy("createdAt", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
