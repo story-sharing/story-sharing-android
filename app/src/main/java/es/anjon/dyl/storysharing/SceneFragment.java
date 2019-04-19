@@ -31,9 +31,10 @@ public class SceneFragment extends Fragment {
         mScene = (Scene) getArguments().getSerializable(SCENE_KEY);
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_scene, container, false);
+        rootView.setBackgroundColor(Color.parseColor(mScene.getBackgroundColour()));
         TextView titleView = rootView.findViewById(R.id.title);
         titleView.setText(mScene.getTitle());
-        rootView.setBackgroundColor(Color.parseColor(mScene.getBackgroundColour()));
+        titleView.setTextColor(Color.parseColor(mScene.getTextColour()));
 
         return rootView;
     }
