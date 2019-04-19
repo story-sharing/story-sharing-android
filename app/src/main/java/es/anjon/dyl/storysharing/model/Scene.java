@@ -9,9 +9,13 @@ import java.util.List;
 
 public class Scene implements Serializable {
 
+    private static final String DEFAULT_BACKGROUND_COLOUR = "#ffffff";
+    private static final String DEFAULT_TEXT_COLOUR = "#000000";
+
     private String id;
     private String title;
     private String backgroundColour;
+    private String textColour;
     private List<Comment> comments;
 
     @ServerTimestamp
@@ -39,13 +43,24 @@ public class Scene implements Serializable {
 
     public String getBackgroundColour() {
         if (backgroundColour == null) {
-            this.backgroundColour = "#ffffff";
+            this.backgroundColour = DEFAULT_BACKGROUND_COLOUR;
         }
         return backgroundColour;
     }
 
     public void setBackgroundColour(String backgroundColour) {
         this.backgroundColour = backgroundColour;
+    }
+
+    public String getTextColour() {
+        if (textColour == null) {
+            this.textColour = DEFAULT_TEXT_COLOUR;
+        }
+        return textColour;
+    }
+
+    public void setTextColour(String textColour) {
+        this.textColour = textColour;
     }
 
     public List<Comment> getComments() {
