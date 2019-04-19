@@ -38,6 +38,9 @@ public class Scene implements Serializable {
     }
 
     public String getBackgroundColour() {
+        if (backgroundColour == null) {
+            this.backgroundColour = "#ffffff";
+        }
         return backgroundColour;
     }
 
