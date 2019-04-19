@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Scene implements Serializable {
 
+    public static final String TAG = "Scene";
+
     private static final String DEFAULT_BACKGROUND_COLOUR = "#ffffff";
     private static final String DEFAULT_TEXT_COLOUR = "#000000";
 
@@ -65,10 +67,9 @@ public class Scene implements Serializable {
 
     public List<Comment> getComments() {
         if (comments == null) {
-            return new ArrayList<>();
-        } else {
-            return comments;
+            comments = new ArrayList<>();
         }
+        return comments;
     }
 
     public void setComments(List<Comment> comments) {
