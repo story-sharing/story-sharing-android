@@ -1,6 +1,7 @@
 package es.anjon.dyl.storysharing;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -11,20 +12,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import es.anjon.dyl.storysharing.adapter.StoryAdapter;
-import es.anjon.dyl.storysharing.model.Scene;
 import es.anjon.dyl.storysharing.model.Story;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String TAG = "MainActivity";
     private RecyclerView mRecyclerView;
     private StoryAdapter mAdapter;
 
@@ -50,28 +60,44 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        List<Story> stories = new ArrayList<>();
-        Story s = new Story();
-        s.setTitle("A really really really long title that might make the box explode or something so hopefully put the elipsis or something instead maybe some sort of max height of 70 percent?");
-        stories.add(s);
-        for (int i = 0; i < 20; i++) {
-            Story story = new Story();
-            story.setTitle("Hello World! " + i);
-            List<Scene> scenes = new ArrayList<>();
-            for (int j = 0; j < 5; j++) {
-                Scene scene = new Scene(story.getTitle() + " - Scene " + j);
-                scenes.add(scene);
-            }
-            story.setScenes(scenes);
-            stories.add(story);
-        }
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.stories);
+        final List<Story> stories = new ArrayList<>();
+        mRecyclerView = findViewById(R.id.stories);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new StoryAdapter(stories);
         mRecyclerView.setAdapter(mAdapter);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ListenerRegistration mStoriesListener = db.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "listen:error", e);
+                    return;
+                }
+
+                for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                    Story story = dc.getDocument().toObject(Story.class);
+                    story.setId(dc.getDocument().getId());
+                    switch (dc.getType()) {
+                        case ADDED:
+                            Log.d(TAG, "New story: " + story);
+                            stories.add(story);
+                            break;
+                        case MODIFIED:
+                            Log.d(TAG, "Modified story: " + dc.getDocument().getData());
+                            stories.set(stories.indexOf(story), story);
+                            break;
+                        case REMOVED:
+                            Log.d(TAG, "Removed story: " + dc.getDocument().getData());
+                            stories.remove(story);
+                            break;
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
