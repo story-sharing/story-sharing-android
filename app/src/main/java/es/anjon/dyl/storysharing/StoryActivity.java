@@ -89,7 +89,7 @@ public class StoryActivity extends FragmentActivity {
         @Override
         public Fragment getItem(int position) {
             Scene scene = mStory.getScenes().get(position);
-            return SceneFragment.newInstance(scene);
+            return SceneFragment.newInstance(scene, mStory);
         }
 
         @Override

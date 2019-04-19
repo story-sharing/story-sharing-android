@@ -9,6 +9,8 @@ import java.util.List;
 
 public class Story implements Serializable {
 
+    public static final String TAG = "Story";
+
     private String id;
     private String title;
     private List<Scene> scenes;
