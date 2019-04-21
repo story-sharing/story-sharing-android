@@ -18,6 +18,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import es.anjon.dyl.storysharing.fragment.SceneFragment;
 import es.anjon.dyl.storysharing.model.Scene;
 import es.anjon.dyl.storysharing.model.Story;
 import es.anjon.dyl.storysharing.transformer.DepthPageTransformer;
@@ -26,6 +27,7 @@ public class StoryActivity extends FragmentActivity {
 
     public static final String TAG = "StoryActivity";
     public static final String STORY_KEY = "story";
+
     private Story mStory;
     private ViewPager mPager;
 

@@ -1,42 +1,27 @@
 package es.anjon.dyl.storysharing;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import es.anjon.dyl.storysharing.adapter.StoryAdapter;
-import es.anjon.dyl.storysharing.model.Story;
+import es.anjon.dyl.storysharing.fragment.GroupsFragment;
+import es.anjon.dyl.storysharing.fragment.StoriesFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-    private RecyclerView mRecyclerView;
-    private StoryAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,45 +44,6 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
-        final List<Story> stories = new ArrayList<>();
-        mRecyclerView = findViewById(R.id.stories);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new StoryAdapter(stories);
-        mRecyclerView.setAdapter(mAdapter);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        ListenerRegistration mStoriesListener = db.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "listen:error", e);
-                    return;
-                }
-
-                for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                    Story story = dc.getDocument().toObject(Story.class);
-                    story.setId(dc.getDocument().getId());
-                    switch (dc.getType()) {
-                        case ADDED:
-                            Log.d(TAG, "New story: " + story);
-                            stories.add(story);
-                            break;
-                        case MODIFIED:
-                            Log.d(TAG, "Modified story: " + dc.getDocument().getData());
-                            stories.set(stories.indexOf(story), story);
-                            break;
-                        case REMOVED:
-                            Log.d(TAG, "Removed story: " + dc.getDocument().getData());
-                            stories.remove(story);
-                            break;
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -132,28 +78,33 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        Fragment frag = null;
         int id = item.getItemId();
-
         if (id == R.id.nav_home) {
-            // Handle the camera action
+            frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_gallery) {
-
+            frag = GroupsFragment.newInstance();
         } else if (id == R.id.nav_slideshow) {
-
+            frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_tools) {
-
+            frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_share) {
-
+            frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_send) {
+            frag = StoriesFragment.newInstance();
+        }
 
+        if (frag != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, frag, frag.getTag());
+            ft.commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
