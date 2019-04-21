@@ -1,5 +1,6 @@
 package es.anjon.dyl.storysharing.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,11 +22,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.anjon.dyl.storysharing.GroupActivity;
 import es.anjon.dyl.storysharing.R;
 import es.anjon.dyl.storysharing.adapter.GroupAdapter;
 import es.anjon.dyl.storysharing.model.Group;
 
-public class GroupsFragment extends Fragment {
+public class GroupsFragment extends Fragment implements GroupAdapter.OnItemClickListener  {
 
     private static final String TAG = "GroupsFragment";
 
@@ -41,7 +43,7 @@ public class GroupsFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_groups, container, false);
 
         final List<Group> groups = new ArrayList<>();
-        final GroupAdapter adapter = new GroupAdapter(groups);
+        final GroupAdapter adapter = new GroupAdapter(groups, this);
         final RecyclerView groupsView = view.findViewById(R.id.groups);
         LinearLayoutManager layoutManager = new LinearLayoutManager(container.getContext());
         groupsView.setLayoutManager(layoutManager);
@@ -95,6 +97,14 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onItemClick(Group group) {
+        Log.d(TAG, "Clicked group: " + group.getTitle());
+        Intent intent = new Intent(getContext(), GroupActivity.class);
+        intent.putExtra(GroupActivity.GROUP_KEY, group);
+        startActivity(intent);
     }
 
 }

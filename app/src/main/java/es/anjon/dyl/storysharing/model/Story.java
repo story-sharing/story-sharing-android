@@ -14,6 +14,7 @@ public class Story implements Serializable {
     private String id;
     private String title;
     private List<Scene> scenes;
+    private List<String> groups;
     private String createdBy;
 
     @ServerTimestamp
@@ -51,6 +52,14 @@ public class Story implements Serializable {
 
     public void setScenes(List<Scene> scenes) {
         this.scenes = scenes;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 
     @Override
