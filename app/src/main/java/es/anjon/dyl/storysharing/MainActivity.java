@@ -82,14 +82,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         Fragment frag = null;
         int id = item.getItemId();
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_stories) {
             frag = StoriesFragment.newInstance();
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_groups) {
             frag = GroupsFragment.newInstance();
-        } else if (id == R.id.nav_slideshow) {
-            frag = StoriesFragment.newInstance();
-        } else if (id == R.id.nav_tools) {
-            frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_share) {
             frag = StoriesFragment.newInstance();
         } else if (id == R.id.nav_send) {
