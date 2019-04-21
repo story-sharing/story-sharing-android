@@ -1,6 +1,8 @@
 package es.anjon.dyl.storysharing;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -11,11 +13,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 import es.anjon.dyl.storysharing.fragment.GroupsFragment;
+import es.anjon.dyl.storysharing.fragment.LoginFragment;
 import es.anjon.dyl.storysharing.fragment.StoriesFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -44,6 +53,23 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        Intent intent = getIntent();
+        if (intent.getData() != null) {
+            // Login attempt from email link
+            String emailLink = intent.getData().toString();
+            if (auth.isSignInWithEmailLink(emailLink)) {
+                String email = "dyl@anjon.es";
+                loginWithEmail(email, emailLink);
+            }
+        } else if (auth.getCurrentUser() == null) {
+            // Not logged in so present login fragment
+            Fragment frag = LoginFragment.newInstance();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container, frag, frag.getTag());
+            ft.commit();
+        }
     }
 
     @Override
@@ -96,6 +122,29 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loginWithEmail(String email, String emailLink) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.signInWithEmailLink(email, emailLink)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Successfully signed in with email link");
+                            AuthResult result = task.getResult();
+                            if (result.getAdditionalUserInfo().isNewUser()) {
+                                //TODO Create new user in db
+                                Log.d(TAG, "Create new user");
+                            } else {
+                                //TODO Get user from db
+                                Log.d(TAG, "Existing user");
+                            }
+                        } else {
+                            Log.e(TAG, "Error signing in with email link", task.getException());
+                        }
+                    }
+                });
     }
 
 }

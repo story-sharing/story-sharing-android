@@ -11,4 +11,6 @@
     <string name="menu_groups">Groups</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="your_email">Your Email</string>
+    <string name="login">Login</string>
 </resources>
