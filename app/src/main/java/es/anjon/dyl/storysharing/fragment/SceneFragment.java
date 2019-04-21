@@ -1,4 +1,4 @@
-package es.anjon.dyl.storysharing;
+package es.anjon.dyl.storysharing.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import es.anjon.dyl.storysharing.R;
 import es.anjon.dyl.storysharing.adapter.CommentAdapter;
 import es.anjon.dyl.storysharing.model.Comment;
 import es.anjon.dyl.storysharing.model.Scene;
