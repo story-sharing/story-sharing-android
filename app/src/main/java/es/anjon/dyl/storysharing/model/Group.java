@@ -1,6 +1,5 @@
 package es.anjon.dyl.storysharing.model;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
 
 import java.io.Serializable;
@@ -14,8 +13,8 @@ public class Group implements Serializable {
 
     private String id;
     private String title;
-    private List<DocumentReference> members;
-    private List<DocumentReference> owners;
+    private List<String> members;
+    private List<String> owners;
     private String createdBy;
 
     @ServerTimestamp
@@ -44,22 +43,22 @@ public class Group implements Serializable {
         this.title = title;
     }
 
-    public List<DocumentReference> getMembers() {
+    public List<String> getMembers() {
         if (members == null) {
             this.members = new ArrayList<>();
         }
         return members;
     }
 
-    public void setMembers(List<DocumentReference> members) {
+    public void setMembers(List<String> members) {
         this.members = members;
     }
 
-    public List<DocumentReference> getOwners() {
+    public List<String> getOwners() {
         return owners;
     }
 
-    public void setOwners(List<DocumentReference> owners) {
+    public void setOwners(List<String> owners) {
         this.owners = owners;
     }
 

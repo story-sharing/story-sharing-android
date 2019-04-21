@@ -15,6 +15,7 @@ import es.anjon.dyl.storysharing.model.Group;
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
 
     private List<Group> mGroups;
+    private final GroupAdapter.OnItemClickListener mListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView;
@@ -23,10 +24,20 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             super(v);
             mTextView = v.findViewById(R.id.title);
         }
+
+        public void bind(final Group group, final OnItemClickListener listener) {
+            mTextView.setText(group.getTitle());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(group);
+                }
+            });
+        }
     }
 
-    public GroupAdapter(List<Group> myDataset) {
-        mGroups = myDataset;
+    public GroupAdapter(List<Group> groups, OnItemClickListener listener) {
+        this.mGroups = groups;
+        this.mListener = listener;
     }
 
     @Override
@@ -39,12 +50,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Group group = mGroups.get(position);
-        holder.mTextView.setText(group.getTitle());
+        holder.bind(group, mListener);
     }
 
     @Override
     public int getItemCount() {
         return mGroups.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Group group);
     }
 
 }
